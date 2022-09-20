@@ -79,12 +79,12 @@ resource "aws_security_group" "k8s-sg" {
     }
 }
 
-resource "aws_eks_cluster" "example" {
+resource "aws_eks_cluster" "mycluster" {
   name     = "mycluster"
-  role_arn = aws_iam_role.example.arn
+  role_arn = aws_iam_role.eks-role.arn
 
   vpc_config {
-    subnet_ids = [aws_subnet.example1.id, aws_subnet.example2.id]
+    subnet_ids = [aws_subnet.k8s-public-subnet.id]
   }
 
 depends_on = [
@@ -93,4 +93,7 @@ depends_on = [
   ]
 }
 
+output "endpoint" {
+  value = aws_eks_cluster.mycluster.endpoint
+}
 
