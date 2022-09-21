@@ -24,11 +24,25 @@ resource "aws_vpc" "k8s-vpc" {
 
 
 resource "aws_subnet" "k8s-public-subnet" {
-    for_each = var.AWS_SUBNET
+    #for_each = var.AWS_SUBNET
     vpc_id = aws_vpc.k8s-vpc.id
-    cidr_block = "${each.value}"
+    #cidr_block = "${each.value}"
+    cidr_block = "10.5.2.0/24"
     map_public_ip_on_launch = "true" //it makes this a public subnet
-    availability_zone = "${each.key}"
+    #availability_zone = "${each.key}"
+    availability_zone = "eu-west-1a"
+    
+}
+
+
+resource "aws_subnet" "k8s-public-subnet2" {
+    #for_each = var.AWS_SUBNET
+    vpc_id = aws_vpc.k8s-vpc.id
+    #cidr_block = "${each.value}"
+    cidr_block = "10.5.1.0/24"
+    map_public_ip_on_launch = "true" //it makes this a public subnet
+    #availability_zone = "${each.key}"
+    availability_zone = "eu-west-1b"
     
 }
 
@@ -84,7 +98,8 @@ resource "aws_eks_cluster" "mycluster" {
   role_arn = aws_iam_role.eks-role.arn
 
   vpc_config {
-    subnet_ids = [aws_subnet.k8s-public-subnet.id]
+    
+    subnet_ids = [aws_subnet.k8s-public-subnet.id,aws_subnet.k8s-public-subnet2.id]
   }
 
 depends_on = [
